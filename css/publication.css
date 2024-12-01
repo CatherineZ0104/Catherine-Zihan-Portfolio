@@ -1,0 +1,304 @@
+.publications-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    padding-top: 0.5rem;
+}
+
+.publication-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.pub-card {
+    background: white;
+    border-radius: 8px;
+    padding: 1.4rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.pub-card:hover {
+    transform: translateY(-5px);
+}
+
+.pub-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 0.8rem;
+}
+
+.pub-card .journal {
+    color: #666;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.pub-card .authors {
+    color: #555;
+    margin-bottom: 0.5rem;
+    line-height: 1.4;
+}
+
+.pub-card .year {
+    color: #007bff;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.expand-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.expand-btn:hover {
+    background: #0056b3;
+}
+
+/* PDF查看器样式 */
+.pdf-viewer-container {
+    position: fixed;
+    top: 80px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #f4f4f4;
+    z-index: 1000;
+    display: flex;
+}
+
+.pdf-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    background: #f8f9fa;
+}
+
+#pdf-viewer {
+    flex: 1;
+    overflow: auto;
+    background: white;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    border-radius: 8px;
+}
+
+.pdf-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    margin-top: 1rem;
+}
+
+.zoom-controls {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pdf-sidebar {
+    width: 250px;
+    padding: 1rem;
+    background: white;
+    border-left: 1px solid #eee;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#download-btn {
+    background: #28a745;
+    color: white;
+}
+
+#close-viewer {
+    background: #dc3545;
+    color: white;
+    margin-top: auto;
+}
+
+button {
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+}
+
+button:hover {
+    background: #f8f9fa;
+}
+
+#page-info {
+    color: #666;
+}
+
+/* 添加论文详情样式 */
+.paper-details {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #eee;
+}
+
+.abstract-section, .keywords-section {
+    margin-bottom: 1.5rem;
+}
+
+.abstract-section h4, .keywords-section h4 {
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 0.8rem;
+    font-weight: normal;
+}
+
+.abstract-section p {
+    color: #444;
+    line-height: 1.6;
+    text-align: justify;
+}
+
+.keywords-section p {
+    color: #666;
+    font-style: italic;
+}
+
+.view-pdf-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-top: 1rem;
+}
+
+.view-pdf-btn:hover {
+    background: #0056b3;
+}
+
+/* 添加 PDF 头部样式 */
+.pdf-header {
+    background: white;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1010;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    color: #007bff;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.nav-btn:hover {
+    color: #0056b3;
+}
+
+.nav-btn span {
+    font-size: 1.4rem;
+}
+
+/* 调整 PDF 主容器的内边距，为头部腾出空间 */
+.pdf-main {
+    padding-top: 4rem;
+}
+
+/* 修改 PDF 头部样式 */
+.pdf-header {
+    background: white;
+    padding: 1rem;
+    border-bottom: 1px solid #eee;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1010;
+}
+
+.pdf-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.pdf-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background: #007bff;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.action-btn:hover {
+    background: #0056b3;
+}
+
+.action-btn span {
+    font-size: 1.2rem;
+}
+
+/* 调整 iframe 的样式 */
+#pdf-viewer {
+    margin-top: 4rem; /* 为顶部控制栏留出空间 */
+    background: #f4f4f4;
+}
+
+/* 添加 PDF 标题样式 */
+.pdf-title {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.viewer-title {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 500;
+} 

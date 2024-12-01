@@ -1,0 +1,221 @@
+/* 主页面布局 */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 80px auto 0;
+}
+
+/* 技术按钮区域 */
+.tech-buttons {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.tech-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.tech-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+.tech-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.tech-btn.active {
+    background: #007bff;
+    color: white;
+}
+
+/* 项目卡片布局 - 修改为竖向排列 */
+.projects-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+}
+
+.project-card {
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    margin-bottom: 1rem;
+}
+
+/* 项目标题区域 */
+.project-title {
+    padding: 1.5rem;
+    background: #f8f9fa;
+}
+
+.project-title h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #333;
+}
+
+/* Abstract区域 */
+.project-abstract {
+    padding: 1.5rem;
+    background: white;
+}
+
+.project-abstract p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+}
+
+.project-abstract ul {
+    list-style-type: none;
+    padding-left: 1rem;
+}
+
+.project-abstract ul ul {
+    padding-left: 2rem;
+    margin-top: 0.5rem;
+}
+
+.project-abstract li {
+    margin-bottom: 0.5rem;
+}
+
+/* 代码展示区 */
+.code-section {
+    position: relative;
+    background: #1e1e1e;
+    padding: 1rem;
+    min-height: 300px;
+}
+
+/* 代码复制按钮 */
+.copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    z-index: 10;
+    transition: background 0.3s ease;
+}
+
+.copy-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* 代码区域样式 */
+.code-section pre {
+    margin: 0;
+    height: 100%;
+    overflow-y: auto;
+    padding-top: 2rem;
+}
+
+.code-section code {
+    font-family: 'Consolas', monospace;
+}
+
+/* 代码行号 */
+.line-numbers {
+    padding-left: 3.8rem !important;
+    counter-reset: linenumber;
+}
+
+.line-numbers .line-numbers-rows {
+    position: absolute;
+    pointer-events: none;
+    top: 0;
+    font-size: 100%;
+    left: 0;
+    width: 3rem;
+    border-right: 1px solid #999;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .tech-buttons {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .projects-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* SPSS 项目卡片样式 */
+.analysis-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.analysis-section {
+    background: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.analysis-section h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+}
+
+.analysis-section pre {
+    background: #2d2d2d;
+    padding: 1rem;
+    border-radius: 6px;
+    overflow-x: auto;
+}
+
+.analysis-section code {
+    color: #e6e6e6;
+    font-family: 'Consolas', monospace;
+}
+
+.analysis-section ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.analysis-section li {
+    margin-bottom: 0.8rem;
+    padding-left: 1.2rem;
+    position: relative;
+}
+
+.analysis-section li:before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    color: #007bff;
+} 

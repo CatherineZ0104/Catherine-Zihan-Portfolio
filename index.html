@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人网站</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
+    </script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-item active">Home</a>
+            <a href="pages/cs.html" class="nav-item">CS</a>
+            <a href="pages/publication.html" class="nav-item">Publication</a>
+            <a href="pages/digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+
+    <!-- 主要内容区 -->
+    <main class="main-content">
+        <div class="profile-section">
+            <div class="profile-top">
+                <div class="profile-info">
+                    <h1 class="name">Catherine (Zihan) Zhang</h1>
+                    <div class="contact-info">
+                        <p>Cell: +1 9176907567</p>
+                        <p>Email: zz3510@nyu.edu</p>
+                    </div>
+                    <div class="education">
+                        <div class="education-item">
+                            <span class="year">2021-2025</span>
+                            <div class="edu-details">
+                                <h3>New York University</h3>
+                                <p>BSc Media, Culture and Communication</p>
+                            </div>
+                        </div>
+                        <div class="education-item">
+                            <span class="year">2023-2024</span>
+                            <div class="edu-details">
+                                <h3>Peking University</h3>
+                                <p>Guanghua School of Management: Business Administration Program</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="profile-image-container">
+                    <img src="imgs/profile.jpg" alt="Catherine Zhang" class="profile-image">
+                </div>
+            </div>
+            <div class="research-interests">
+                <h2>Research Interests</h2>
+                <ul>
+                    <li><strong>Media, Communication, and Psychological Wellbeing:</strong> Social media usage and beliefs, impact on mental health, beliefs, and emotional expression, relations/online expressions of emotions, digital social support</li>
+                    <li><strong>Cross-cultural Communication:</strong> Cultural variations in social media use, comparative analysis of digital behaviors in Eastern and Western contexts</li>
+                    <li><strong>Human-Computer Interaction:</strong> User experience design, culturally sensitive digital interfaces</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html> 
