@@ -1,9 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 初始化每个部分的轮播
-    const swipers = document.querySelectorAll('.swiper-container').forEach((element, index) => {
+    // 初始化所有轮播
+    const swipers = document.querySelectorAll('.swiper').forEach((element) => {
         new Swiper(element, {
             slidesPerView: 1,
-            spaceBetween: 30,
+            spaceBetween: 0,
             loop: true,
             autoplay: {
                 delay: 3000,
