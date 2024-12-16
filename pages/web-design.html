@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Design - Catherine Zhang</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/digital-media.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-item">Home</a>
+            <a href="cs.html" class="nav-item">CS</a>
+            <a href="publication.html" class="nav-item">Publication</a>
+            <a href="digital-media.html" class="nav-item active">Digital Media</a>
+        </div>
+    </nav>
+
+    <div class="back-button-container">
+        <a href="digital-media.html" class="back-button">
+            <span>←</span> Back to Digital Media
+        </a>
+    </div>
+
+    <main class="main-content">
+        <div class="web-projects-grid">
+            <!-- 个人作品集网站 -->
+            <div class="web-project-card">
+                <div class="project-image">
+                    <img src="/Users/zzh/Documents/伟大的张紫涵领导/申请/PHD/Catherine(Zihan)Zhang/imgs/WebDesign1.jpg" alt="Portfolio Website">
+                </div>
+                <div class="project-info">
+                    <h3>Catherine(Zihan)'s Portfolio</h3>
+                    <p>A personal portfolio website showcasing academic projects, publications, and digital media works.</p>
+                    <button class="view-project-btn" onclick="openPortfolioModal()">View Project</button>
+                </div>
+            </div>
+
+            <!-- 水质项目网站 -->
+            <div class="web-project-card">
+                <div class="project-image">
+                    <img src="/Users/zzh/Documents/伟大的张紫涵领导/申请/PHD/Catherine(Zihan)Zhang/imgs/WebDesign2.jpg" alt="Water Quality Project">
+                </div>
+                <div class="project-info">
+                    <h3>Water Quality in New York City: Build Green Infrastructure To The Gowanus Canal</h3>
+                    <p>A comprehensive web project focusing on water quality improvement initiatives in NYC.</p>
+                    <a href="https://composingdigitalmedia.org/s23_dmtp/web/zca/?C=M;O=A" target="_blank" class="view-project-btn">View Project</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 模态框 -->
+    <div id="portfolio-modal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Catherine(Zihan)'s Portfolio</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <iframe src="../index.html" width="100%" height="600px" frameborder="0"></iframe>
+            </div>
+            <div class="modal-footer">
+                <a href="../index.html" class="enter-btn">Enter Home Page</a>
+                <button class="close-modal-btn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Zihan(Catherine) Zhang. All rights reserved.</p>
+    </footer>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/digital-media.js"></script>
+</body>
+</html> 

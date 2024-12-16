@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Data Analysis - SQL Project</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-item">Home</a>
+            <a href="../cs.html" class="nav-item active">CS</a>
+            <a href="../publication.html" class="nav-item">Publication</a>
+            <a href="../digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="project-detail">
+            <div class="project-header">
+                <h1>Advanced Data Analysis in SQL</h1>
+                <p class="project-subtitle">Complex Data Analysis for Research Findings</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Project Overview</h2>
+                <p>Advanced SQL queries and analysis for examining relationships between demographic variables, internet usage patterns, and well-being indicators in large-scale survey data.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Analysis Process</h2>
+                
+                <div class="analysis-step">
+                    <h3>1. Complex Aggregations</h3>
+                    <pre><code class="language-sql">
+-- Calculate advanced statistics by demographic groups
+WITH demographic_stats AS (
+    SELECT 
+        p.education_level,
+        p.age_group,
+        AVG(r.internet_usage_time) as avg_usage,
+        STDDEV(r.internet_usage_time) as usage_std,
+        AVG((r.wellbeing_1 + r.wellbeing_2 + r.wellbeing_3)/3.0) as avg_wellbeing,
+        COUNT(*) as group_size
+    FROM participants p
+    JOIN survey_responses r ON p.participant_id = r.participant_id
+    GROUP BY p.education_level, p.age_group
+    HAVING COUNT(*) > 30
+)
+SELECT 
+    education_level,
+    age_group,
+    avg_usage,
+    usage_std,
+    avg_wellbeing,
+    group_size
+FROM demographic_stats
+ORDER BY avg_wellbeing DESC;
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>2. Correlation Analysis</h3>
+                    <pre><code class="language-sql">
+-- Calculate correlation coefficients
+WITH normalized_scores AS (
+    SELECT 
+        participant_id,
+        (internet_importance_1 - AVG(internet_importance_1) OVER()) / 
+        STDDEV(internet_importance_1) OVER() as norm_importance,
+        (wellbeing_1 - AVG(wellbeing_1) OVER()) / 
+        STDDEV(wellbeing_1) OVER() as norm_wellbeing
+    FROM survey_responses
+)
+SELECT 
+    SUM(norm_importance * norm_wellbeing) / (COUNT(*) - 1) as correlation_coefficient
+FROM normalized_scores;
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>3. Time Series Analysis</h3>
+                    <pre><code class="language-sql">
+-- Analyze trends over time
+WITH monthly_stats AS (
+    SELECT 
+        DATE_TRUNC('month', response_date) as month,
+        AVG(internet_usage_time) as avg_usage,
+        AVG((wellbeing_1 + wellbeing_2 + wellbeing_3)/3.0) as avg_wellbeing
+    FROM survey_responses
+    GROUP BY DATE_TRUNC('month', response_date)
+)
+SELECT 
+    month,
+    avg_usage,
+    avg_wellbeing,
+    LAG(avg_wellbeing) OVER (ORDER BY month) as prev_wellbeing,
+    avg_wellbeing - LAG(avg_wellbeing) OVER (ORDER BY month) as wellbeing_change
+FROM monthly_stats
+ORDER BY month;
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Features</h2>
+                <ul>
+                    <li>Advanced statistical calculations using SQL</li>
+                    <li>Complex data aggregation and analysis</li>
+                    <li>Time series trend analysis</li>
+                    <li>Correlation coefficient calculations</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html> 

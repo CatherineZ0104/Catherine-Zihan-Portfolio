@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Statistical Analysis - SPSS Project</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-item">Home</a>
+            <a href="../cs.html" class="nav-item active">CS</a>
+            <a href="../publication.html" class="nav-item">Publication</a>
+            <a href="../digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="project-detail">
+            <div class="project-header">
+                <h1>Advanced Statistical Analysis in SPSS</h1>
+                <p class="project-subtitle">Complex Statistical Modeling and Hypothesis Testing</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Project Overview</h2>
+                <p>Advanced statistical analysis examining the mediating and moderating effects in the relationship between internet usage patterns, social connections, and psychological well-being.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Analysis Process</h2>
+                
+                <div class="analysis-step">
+                    <h3>1. Factor Analysis</h3>
+                    <pre><code class="language-spss">
+/* Exploratory Factor Analysis */
+FACTOR
+  /VARIABLES qn601_s_1 qn601_s_2 qn601_s_3 qn2001 qn2002 qn2003
+  /MISSING LISTWISE 
+  /ANALYSIS qn601_s_1 qn601_s_2 qn601_s_3 qn2001 qn2002 qn2003
+  /PRINT INITIAL EXTRACTION ROTATION
+  /FORMAT SORT
+  /CRITERIA MINEIGEN(1) ITERATE(25)
+  /EXTRACTION PC
+  /ROTATION VARIMAX
+  /METHOD=CORRELATION.
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>2. Moderation Analysis</h3>
+                    <pre><code class="language-spss">
+/* Moderation Analysis using PROCESS */
+PROCESS
+  /Y=WellbeingIndex
+  /X=InternetImportance
+  /W=InternetUsageTime
+  /COVARIATES=age gender education income
+  /MODEL=1
+  /BOOT=5000
+  /CONF=95
+  /CENTER=1.
+
+/* Visualize Interaction */
+GRAPH
+  /SCATTERPLOT(OVERLAY)=InternetImportance WITH WellbeingIndex BY InternetUsageTime(1,3)
+  /MISSING=LISTWISE.
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>3. Path Analysis</h3>
+                    <pre><code class="language-spss">
+/* Path Analysis using AMOS syntax */
+AMOS
+  /TITLE "Internet Usage Path Model"
+  /MODEL
+    InternetImportance -> SocialConnections
+    InternetUsageTime -> SocialConnections
+    SocialConnections -> WellbeingIndex
+    InternetImportance -> WellbeingIndex
+    InternetUsageTime -> WellbeingIndex
+  /ANALYSIS
+    METHOD=ML
+    BOOT=2000
+  /OUTPUT
+    STANDARDIZED
+    RESIDUALS
+    MODIFICATION
+    FMIN
+    CMIN
+    GFI
+    NFI
+    CFI
+    RMSEA
+    PCLOSE.
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>4. Advanced Regression Diagnostics</h3>
+                    <pre><code class="language-spss">
+/* Regression Diagnostics */
+REGRESSION
+  /DEPENDENT WellbeingIndex
+  /METHOD=ENTER InternetImportance InternetUsageTime SocialConnections
+  /STATISTICS COEFF OUTS R ANOVA COLLIN TOL
+  /CRITERIA=PIN(.05) POUT(.10)
+  /RESIDUALS DURBIN HISTOGRAM(ZRESID) NORMPROB(ZRESID)
+  /SAVE PRED COOK LEVER RESID.
+
+/* Test for Heteroscedasticity */
+COMPUTE ABSRES=ABS(RES_1).
+REGRESSION
+  /DEPENDENT ABSRES
+  /METHOD=ENTER PRED_1.
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Findings</h2>
+                <ul>
+                    <li>Factor analysis confirmed distinct constructs for internet importance and well-being measures</li>
+                    <li>Internet usage time moderates the relationship between importance and well-being</li>
+                    <li>Path analysis revealed significant indirect effects through social connections</li>
+                    <li>Model diagnostics confirmed the robustness of findings</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html> 

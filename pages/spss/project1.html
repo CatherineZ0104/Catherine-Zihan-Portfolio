@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internet Usage & Well-being Analysis - SPSS Project</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-item">Home</a>
+            <a href="../cs.html" class="nav-item active">CS</a>
+            <a href="../publication.html" class="nav-item">Publication</a>
+            <a href="../digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="project-detail">
+            <!-- 1. 项目概述 -->
+            <div class="project-section">
+                <h2>Project Overview</h2>
+                <p>This study utilizes data from 14,940 participants in the 2022 China Family Panel Studies (CFPS) to examine how both internet usage time and perceived internet importance relate to multiple dimensions of wellbeing and social outcomes. Using SPSS for comprehensive quantitative analysis, we investigated relationships with happiness, life satisfaction, meaning in life, interpersonal relations, and social trust.</p>
+            </div>
+
+            <!-- 2. 样本特征 -->
+            <div class="project-section">
+                <h2>Sample Characteristics</h2>
+                <p>The CFPS employs a sophisticated stratified, multi-stage probability sampling design covering 25 provinces in mainland China, ensuring coverage of approximately 95% of the Chinese population.</p>
+                
+                <div class="analysis-step">
+                    <h3>Sample Demographics</h3>
+                    <pre><code class="language-spss">
+/* Sample Size and Gender Distribution */
+FREQUENCIES VARIABLES=gender
+  /ORDER=ANALYSIS
+  /STATISTICS=VALID
+  /FORMAT=NOTABLE
+  /BARCHART.
+
+/* Education Distribution */
+FREQUENCIES VARIABLES=education
+  /ORDER=ANALYSIS
+  /STATISTICS=VALID PERCENT
+  /BARCHART.
+
+/* Sample: 14,940 participants */
+/* Gender: 7,284 females (48.8%), 7,656 males (51.2%) */
+/* Education:
+   - Illiterate: 921 (6.2%)
+   - Primary school: 1,953 (13.1%)
+   - Middle school: 4,794 (32.1%)
+   - High school: 3,354 (22.4%)
+   - Associate degree: 1,934 (12.9%)
+   - Bachelor's degree: 1,792 (12.0%)
+   - Master's degree: 172 (1.2%)
+   - Doctoral degree: 20 (0.1%) */
+                    </code></pre>
+                </div>
+            </div>
+
+            <!-- 3. 变量定义 -->
+            <div class="project-section">
+                <h2>Variables and Measurements</h2>
+                <div class="analysis-step">
+                    <h3>Variable Definitions</h3>
+                    <pre><code class="language-spss">
+/* Define Variables */
+VARIABLE LABELS
+    happiness "How happy do you feel? (0-10)"
+    life_satisfaction "Are you satisfied with your life? (0-10)"
+    meaning_life "To what extent do you consider your life meaningful? (0-10)"
+    interpersonal "Do you think you are popular? (0-10)"
+    social_trust "Do you think most people are trustworthy? (1-5)"
+    internet_time "Internet Usage Time (minutes/day)"
+    internet_importance "Internet Importance (1-5)".
+
+/* Value Labels */
+VALUE LABELS
+    social_trust
+    1 'Strongly disagree'
+    2 'Disagree'
+    3 'Neutral'
+    4 'Agree'
+    5 'Strongly agree'.
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>Descriptive Statistics</h3>
+                    <pre><code class="language-spss">
+/* Descriptive Statistics for All Variables */
+DESCRIPTIVES VARIABLES=happiness life_satisfaction meaning_life 
+    interpersonal social_trust internet_time internet_importance
+    /STATISTICS=MEAN STDDEV MIN MAX.
+
+/* Results from analysis:
+Variable          Mean    SD      Min    Max
+Happiness         7.41    1.958   0      10
+Life Satisfaction 3.92    0.890   0      10
+Meaning in Life   7.39    1.940   0      10
+Interpersonal     6.96    1.775   0      10
+Social Trust      2.72    0.980   1      5  */
+                    </code></pre>
+                </div>
+            </div>
+
+            <!-- 4. 统计分析 -->
+            <div class="project-section">
+                <h2>Statistical Analysis</h2>
+                <div class="analysis-step">
+                    <h3>Correlation Analysis</h3>
+                    <pre><code class="language-spss">
+/* Bivariate Correlations */
+CORRELATIONS
+    /VARIABLES=internet_importance internet_time happiness life_satisfaction 
+              meaning_life interpersonal social_trust
+    /PRINT=TWOTAIL NOSIG
+    /MISSING=PAIRWISE.
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>Regression Analysis</h3>
+                    <pre><code class="language-spss">
+/* Hierarchical Multiple Regression */
+REGRESSION
+    /DEPENDENT happiness
+    /METHOD=ENTER age gender education income social_status  /* Model 1 */
+    /METHOD=ENTER internet_time                             /* Model 2 */
+    /METHOD=ENTER internet_importance                       /* Model 3 */
+    /STATISTICS COEFF OUTS R ANOVA CHANGE
+    /CRITERIA=PIN(.05) POUT(.10).
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>Mediation Analysis</h3>
+                    <pre><code class="language-spss">
+/* PROCESS Macro for Mediation Analysis */
+PROCESS
+    /Y=happiness
+    /X=internet_importance
+    /M=social_trust interpersonal
+    /COVARIATES=age gender education income internet_time
+    /MODEL=4
+    /BOOT=5000
+    /CONF=95
+    /PLOT=1.
+                    </code></pre>
+                </div>
+            </div>
+
+            <!-- 5. 研究发现 -->
+            <div class="project-section">
+                <h2>Key Findings</h2>
+                <ul>
+                    <li>Internet importance showed significant positive correlations with well-being (r = .32, p < .001)</li>
+                    <li>Internet usage time showed minimal associations with well-being (r = -.08, p < .05)</li>
+                    <li>Social connections significantly mediated the relationship between internet importance and well-being</li>
+                    <li>Results remained robust after controlling for demographic variables</li>
+                    <li>The findings suggest that the psychological meaning attributed to internet use may be more consequential for well-being than actual usage time</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html> 

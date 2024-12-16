@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Management - SQL Project</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-item">Home</a>
+            <a href="../cs.html" class="nav-item active">CS</a>
+            <a href="../publication.html" class="nav-item">Publication</a>
+            <a href="../digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="project-detail">
+            <div class="project-header">
+                <h1>Research Data Management System</h1>
+                <p class="project-subtitle">Database Design for Survey Data Analysis</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Project Overview</h2>
+                <p>Design and implementation of a database system for managing large-scale survey data from the China Family Panel Studies (CFPS), focusing on internet usage patterns and well-being indicators.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Database Schema</h2>
+                
+                <div class="analysis-step">
+                    <h3>1. Table Creation</h3>
+                    <pre><code class="language-sql">
+-- Create participants table
+CREATE TABLE participants (
+    participant_id INT PRIMARY KEY,
+    age INT,
+    gender VARCHAR(10),
+    education_level VARCHAR(50),
+    income DECIMAL(10,2),
+    region VARCHAR(100)
+);
+
+-- Create survey responses table
+CREATE TABLE survey_responses (
+    response_id INT PRIMARY KEY,
+    participant_id INT,
+    internet_usage_time FLOAT,
+    internet_importance_1 INT,
+    internet_importance_2 INT,
+    internet_importance_3 INT,
+    wellbeing_1 INT,
+    wellbeing_2 INT,
+    wellbeing_3 INT,
+    social_connection_1 INT,
+    social_connection_2 INT,
+    FOREIGN KEY (participant_id) REFERENCES participants(participant_id)
+);
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>2. Data Analysis Queries</h3>
+                    <pre><code class="language-sql">
+-- Calculate average scores by demographic groups
+SELECT 
+    p.education_level,
+    AVG(r.internet_usage_time) as avg_usage,
+    AVG((r.internet_importance_1 + r.internet_importance_2 + r.internet_importance_3)/3.0) as avg_importance,
+    AVG((r.wellbeing_1 + r.wellbeing_2 + r.wellbeing_3)/3.0) as avg_wellbeing
+FROM participants p
+JOIN survey_responses r ON p.participant_id = r.participant_id
+GROUP BY p.education_level
+HAVING COUNT(*) > 50
+ORDER BY avg_wellbeing DESC;
+
+-- Identify high internet importance correlations
+SELECT 
+    p.age,
+    p.gender,
+    r.internet_importance_1,
+    r.wellbeing_1,
+    r.social_connection_1
+FROM participants p
+JOIN survey_responses r ON p.participant_id = r.participant_id
+WHERE r.internet_importance_1 > 4
+ORDER BY r.wellbeing_1 DESC;
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Features</h2>
+                <ul>
+                    <li>Efficient data organization for large-scale survey responses</li>
+                    <li>Complex query support for statistical analysis</li>
+                    <li>Robust foreign key relationships</li>
+                    <li>Optimized for research data analysis</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html> 

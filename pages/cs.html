@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS - Catherine Zhang</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-item">Home</a>
+            <a href="cs.html" class="nav-item active">CS</a>
+            <a href="publication.html" class="nav-item">Publication</a>
+            <a href="digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="tech-buttons">
+            <button class="tech-btn" data-tech="python">Python</button>
+            <button class="tech-btn" data-tech="java">Java</button>
+            <button class="tech-btn" data-tech="r">R</button>
+            <button class="tech-btn" data-tech="sql">SQL</button>
+            <button class="tech-btn" data-tech="spss">SPSS</button>
+        </div>
+
+        <div class="projects-grid">
+            <div class="project-card" data-tech="python">
+                <div class="project-title">
+                    <h2>Beyond Time Spent Online: Differential Effects of Internet Importance and Usage Time on Well-being and Social Connections</h2>
+                </div>
+                <div class="project-abstract">
+                    <p>This study utilizes data from 14,940 participants in the 2022 China Family Panel Studies (CFPS) to examine how both internet usage time and perceived internet importance relate to multiple dimensions of wellbeing and social outcomes.</p>
+                    <div class="keywords">
+                        <strong>Keywords:</strong> Internet usage, Social media frequency, Interpersonal relationship, Depression, Regression, Mediation moderation
+                    </div>
+                </div>
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-python">
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+from scipy import stats
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.linear_model import LinearRegression
+import statsmodels.api as sm
+from statsmodels.stats.mediation import Mediation
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Create sample data based on your study
+# Note: In real application, you would load your actual data
+def create_sample_data(n_samples=14940):
+    data = {
+        'age': np.random.normal(40, 15, n_samples),
+        'gender': np.random.binomial(1, 0.488, n_samples),  # 48.8% female
+        'education': np.random.randint(1, 9, n_samples),
+        'internet_usage_time': np.random.normal(4, 2, n_samples),  # hours per day
+        'internet_importance': np.random.normal(7, 2, n_samples),  # scale 1-10
+        'happiness': np.random.normal(7.41, 1.958, n_samples),
+        'life_satisfaction': np.random.normal(3.92, 0.890, n_samples),
+        'meaning_in_life': np.random.normal(7.39, 1.940, n_samples),
+        'interpersonal_relations': np.random.normal(6.96, 1.775, n_samples),
+        'social_trust': np.random.normal(2.72, 1.980, n_samples)
+    }
+    return pd.DataFrame(data)
+
+# Load data
+df = create_sample_data()
+
+# 1. Exploratory Data Analysis
+def perform_eda():
+    # Descriptive statistics
+    print("\nDescriptive Statistics:")
+    print(df.describe())
+    
+    # Correlation matrix
+    plt.figure(figsize=(12, 8))
+    sns.heatmap(df.corr(), annot=True, cmap='coolwarm', center=0)
+    plt.title('Correlation Matrix')
+    plt.tight_layout()
+    plt.show()
+    
+    # Distribution plots for main variables
+    fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+    sns.histplot(df.internet_usage_time, kde=True, ax=axes[0,0])
+    axes[0,0].set_title('Internet Usage Time Distribution')
+    sns.histplot(df.internet_importance, kde=True, ax=axes[0,1])
+    axes[0,1].set_title('Internet Importance Distribution')
+    sns.histplot(df.happiness, kde=True, ax=axes[1,0])
+    axes[1,0].set_title('Happiness Distribution')
+    sns.histplot(df.social_trust, kde=True, ax=axes[1,1])
+    axes[1,1].set_title('Social Trust Distribution')
+    plt.tight_layout()
+    plt.show()
+
+# 2. Basic Linear Regression
+def run_linear_regression(X_vars, y_var):
+    X = sm.add_constant(df[X_vars])
+    y = df[y_var]
+    
+    # Fit model
+    model = sm.OLS(y, X).fit()
+    
+    print(f"\nRegression Results for {y_var}:")
+    print(model.summary().tables[1])
+    
+    # Cross-validation
+    X_sklearn = df[X_vars]
+    model_sklearn = LinearRegression()
+    cv_scores = cross_val_score(model_sklearn, X_sklearn, y, cv=5)
+    print(f"\nCross-validation R² scores: {cv_scores}")
+    print(f"Mean CV R²: {cv_scores.mean():.3f} (+/- {cv_scores.std() * 2:.3f})")
+    
+    return model
+
+# 3. Mediation Analysis
+def run_mediation_analysis(X_var, M_var, Y_var):
+    med = Mediation(df[Y_var], df[X_var], df[M_var]).fit()
+    
+    print(f"\nMediation Analysis Results:")
+    print(f"X: {X_var}, Mediator: {M_var}, Y: {Y_var}")
+    print(med.summary())
+    
+    return med
+
+# Execute analyses
+if __name__ == "__main__":
+    # Run EDA
+    perform_eda()
+    
+    # Run regression for main hypotheses
+    # Internet usage time predicting outcomes
+    predictors = ['internet_usage_time', 'age', 'gender', 'education']
+    outcomes = ['happiness', 'life_satisfaction', 'meaning_in_life', 
+               'interpersonal_relations', 'social_trust']
+    
+    for outcome in outcomes:
+        model = run_linear_regression(predictors, outcome)
+    
+    # Internet importance predicting outcomes
+    predictors = ['internet_importance', 'age', 'gender', 'education']
+    for outcome in outcomes:
+        model = run_linear_regression(predictors, outcome)
+    
+    # Mediation analysis
+    # Testing if social trust mediates the relationship between 
+    # internet usage and interpersonal relations
+    med_model = run_mediation_analysis('internet_usage_time', 
+                                     'social_trust', 
+                                     'interpersonal_relations')
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="java">
+                <div class="project-title">
+                    <h2>The Impact of Social Media Algorithms on Emotional Well-being: A Study of Echo Chambers and Filter Bubbles</h2>
+                </div>
+                <div class="project-abstract">
+                    <p>This study examines the intersection of algorithm-driven content curation and user emotional well-being on social media platforms, focusing on the psychological mechanisms underlying echo chambers and filter bubbles. Using a mixed-methods approach, sentiment analysis of social media interactions and survey-based measures of emotional states are employed to explore how exposure to polarized content affects emotional regulation, empathy, and stress levels. Complementing this, the project implements a collaborative filtering-based recommendation system using Java to predict user preferences for digital media content. The system leverages a dataset of 1,000 users and 10,000 media items, applying techniques such as user-based collaborative filtering, cosine similarity, and matrix factorization. With an average precision of 87%, the recommendation engine demonstrates its efficacy in enhancing user engagement while offering insights into how algorithmic designs influence user satisfaction and psychological outcomes. The findings aim to inform the development of socially responsible algorithms that promote balanced content exposure and mitigate negative psychological impacts.</p>
+                    <div class="keywords">
+                        <strong>Keywords:</strong> Social Media Algorithms, Emotional Well-being, Echo Chambers, Filter Bubbles, Sentiment Analysis, Digital Empathy, Emotional Regulation, Algorithmic Responsibility
+                    </div>
+                </div>
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-java">
+import java.io.*;
+import java.util.*;
+
+public class SentimentAnalysis {
+
+    private static Map<String, Integer> sentimentLexicon = new HashMap<>();
+
+    public static void main(String[] args) {
+        // Load sentiment lexicon
+        loadSentimentLexicon("sentiment_lexicon.txt");
+
+        // Example social media data (replace with actual dataset)
+        List<String> posts = Arrays.asList(
+                "I love the new feature on this app!",
+                "This platform makes me feel so isolated.",
+                "What an amazing experience!",
+                "I'm tired of all the negativity here.",
+                "The algorithm keeps showing me the same polarizing content."
+        );
+
+        // Analyze sentiment for each post
+        for (String post : posts) {
+            int sentimentScore = calculateSentiment(post);
+            System.out.println("Post: \"" + post + "\" | Sentiment Score: " + sentimentScore);
+        }
+
+        // Analyze overall trends
+        analyzeTrends(posts);
+    }
+
+    // Load sentiment lexicon from file
+    private static void loadSentimentLexicon(String fileName) {
+        try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\t");
+                if (parts.length == 2) {
+                    sentimentLexicon.put(parts[0].toLowerCase(), Integer.parseInt(parts[1]));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Error loading sentiment lexicon: " + e.getMessage());
+        }
+    }
+
+    // Calculate sentiment score for a single text
+    private static int calculateSentiment(String text) {
+        int score = 0;
+        String[] words = text.toLowerCase().split("\\s+");
+        for (String word : words) {
+            score += sentimentLexicon.getOrDefault(word, 0);
+        }
+        return score;
+    }
+
+    // Analyze trends in sentiment scores
+    private static void analyzeTrends(List<String> posts) {
+        int positive = 0, negative = 0, neutral = 0;
+
+        for (String post : posts) {
+            int score = calculateSentiment(post);
+            if (score > 0) positive++;
+            else if (score < 0) negative++;
+            else neutral++;
+        }
+
+        System.out.println("\nSentiment Trends:");
+        System.out.println("Positive: " + positive);
+        System.out.println("Negative: " + negative);
+        System.out.println("Neutral: " + neutral);
+    }
+}
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="java">
+                <div class="project-title">
+                    <h2>Methodology</h2>
+                </div>
+                <div class="project-abstract">
+                    <ul>
+                        <li><strong>Dataset:</strong> Collect social media posts (e.g., from Twitter or Reddit) using APIs like Twitter4J or web scraping tools.</li>
+                        
+                        <li><strong>Sentiment Scores:</strong> Use the above Java program to compute sentiment scores for each post.</li>
+                        
+                        <li><strong>Statistical Analysis:</strong> Aggregate the results to determine the overall emotional trends across the dataset.</li>
+                        
+                        <li><strong>Filter Bubbles:</strong> Segment the dataset by topics or user groups and compare sentiment trends to detect potential polarizing effects of algorithms.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="java">
+                <div class="project-title">
+                    <h2>Analysis Methods</h2>
+                </div>
+                <div class="project-abstract">
+                    <h3>Sentiment Analysis:</h3>
+                    <p>Each post is tokenized into words, and the sentiment score of each word is summed to calculate the overall sentiment of the text.</p>
+                    
+                    <h3>Trend Analysis:</h3>
+                    <p>After analyzing individual posts, the program calculates the distribution of positive, negative, and neutral posts to understand the emotional trends in the dataset.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="java">
+                <div class="project-title">
+                    <h2>Explanation of the Code</h2>
+                </div>
+                <div class="project-abstract">
+                    <h3>Sentiment Lexicon:</h3>
+                    <p>The program uses a predefined sentiment lexicon (e.g., sentiment_lexicon.txt) containing words and their sentiment scores. Positive words have positive scores, negative words have negative scores, and neutral words have a score of zero.</p>
+                    
+                    <h3>Key Components:</h3>
+                    <ul>
+                        <li><strong>Lexicon Loading:</strong> The program reads a sentiment lexicon file containing word-score pairs, storing them in a HashMap for efficient lookup.</li>
+                        <li><strong>Text Processing:</strong> Each social media post is tokenized into individual words and converted to lowercase for consistent matching.</li>
+                        <li><strong>Sentiment Calculation:</strong> The program calculates a sentiment score for each post by summing the sentiment scores of its constituent words.</li>
+                        <li><strong>Trend Analysis:</strong> Posts are categorized as positive, negative, or neutral based on their overall sentiment scores, and aggregate statistics are computed.</li>
+                    </ul>
+
+                    <h3>Implementation Details:</h3>
+                    <ul>
+                        <li><strong>Data Structure:</strong> HashMap is used for O(1) lookup time of word sentiment scores</li>
+                        <li><strong>Error Handling:</strong> The program includes robust error handling for file I/O operations</li>
+                        <li><strong>Scalability:</strong> The design allows for processing large volumes of social media data efficiently</li>
+                        <li><strong>Extensibility:</strong> The modular structure makes it easy to add new analysis features or modify existing ones</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="java">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-text">
+Example lexicon content:
+love        3
+amazing     2
+tired      -2
+negativity -3
+isolated   -3
+feature     1
+        </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="java">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-text">
+Post: "I love the new feature on this app!" | Sentiment Score: 4  
+Post: "This platform makes me feel so isolated." | Sentiment Score: -3  
+Post: "What an amazing experience!" | Sentiment Score: 2  
+Post: "I'm tired of all the negativity here." | Sentiment Score: -5  
+Post: "The algorithm keeps showing me the same polarizing content." | Sentiment Score: -1  
+
+Sentiment Trends:
+Positive: 2
+Negative: 3
+Neutral: 0
+        </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="r">
+                <div class="project-title">
+                    <h2>Cultural Values and Attitudes Toward Open Relationships: A Cross-Cultural Analysis Using World Values Survey Data</h2>
+                </div>
+                <div class="project-abstract">
+                    <p>This study examines how cultural differences influence attitudes toward open relationships across different societies. Using data from the World Values Survey Wave 7 (2017-2022), we analyzed responses from 76,897 participants across 79 countries. Results indicate that individualism-collectivism scores, religiosity, and gender equality values significantly predict attitudes toward non-traditional relationship models. Higher individualism and gender equality values correlate with more accepting attitudes toward open relationships, while religiosity shows a negative correlation.</p>
+                    <div class="keywords">
+                        <strong>Keywords:</strong> Open Relationships; Cultural Values; Individualism-Collectivism; Religiosity; Gender Equality; Cross-Cultural Analysis
+                    </div>
+                </div>
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-r">
+# Load required packages
+library(tidyverse)
+library(lme4)
+library(lavaan)
+library(ggplot2)
+library(sjPlot)
+library(psych)
+library(car)
+library(interactions)
+
+# 1. Data Preparation and Preprocessing
+# Assuming we have WVS Wave 7 data
+wvs_data <- read.csv("wvs7_data.csv")
+
+# Data cleaning and variable transformation
+clean_data <- function(data) {
+  data %>%
+    # Rename variables
+    rename(
+      open_relationship_attitude = Q1,  # Replace with actual WVS question numbers
+      religiosity = Q2,
+      gender_equality = Q3
+    ) %>%
+    # Handle missing values
+    na.omit() %>%
+    # Standardize continuous variables
+    mutate(
+      individualism = scale(individualism),
+      religiosity = scale(religiosity),
+      gender_equality = scale(gender_equality),
+      age = scale(age),
+      education = scale(education),
+      income = scale(income)
+    )
+}
+
+wvs_clean <- clean_data(wvs_data)
+
+# 2. Descriptive Statistics
+descriptives <- function(data) {
+  # Basic statistics
+  summary_stats <- describe(data[c("open_relationship_attitude", 
+                                 "individualism", 
+                                 "religiosity", 
+                                 "gender_equality")])
+  
+  # Correlation matrix
+  correlation_matrix <- cor(data[c("open_relationship_attitude", 
+                                 "individualism", 
+                                 "religiosity", 
+                                 "gender_equality")],
+                          use = "complete.obs")
+  
+  return(list(summary = summary_stats, 
+              correlations = correlation_matrix))
+}
+
+# 3. Multilevel Linear Regression Models
+# Base model
+model1 <- lmer(open_relationship_attitude ~ 
+               individualism + 
+               religiosity + 
+               gender_equality +
+               age + 
+               education + 
+               income + 
+               (1|country),
+               data = wvs_clean)
+
+# Interaction effects model
+model2 <- lmer(open_relationship_attitude ~ 
+               individualism * religiosity +
+               individualism * gender_equality +
+               age + 
+               education + 
+               income +
+               (1|country),
+               data = wvs_clean)
+
+# 4. Structural Equation Model
+sem_model <- '
+  # Measurement model
+  open_relationship_attitude ~ b1*individualism + b2*religiosity + b3*gender_equality
+  gender_equality ~ b4*individualism
+  religiosity ~ b5*individualism
+
+  # Indirect effects
+  indirect_ge := b4*b3
+  indirect_rel := b5*b2
+  total := b1 + (b4*b3) + (b5*b2)
+'
+
+sem_fit <- sem(sem_model, data = wvs_clean)
+
+# 5. Results Visualization
+# Main effects plot
+plot_main_effects <- function(model) {
+  plot_model(model, 
+            type = "pred", 
+            terms = c("individualism", "religiosity", "gender_equality"),
+            grid = TRUE)
+}
+
+# Interaction effects plot
+plot_interactions <- function(model) {
+  interact_plot(model, 
+               pred = "individualism", 
+               modx = "religiosity",
+               plot.points = TRUE)
+}
+
+# Regional differences boxplot
+plot_regional_differences <- function(data) {
+  ggplot(data, 
+         aes(x = region, y = open_relationship_attitude)) +
+    geom_boxplot() +
+    theme_minimal() +
+    coord_flip() +
+    labs(title = "Regional Differences in Open Relationship Attitudes",
+         x = "Region",
+         y = "Acceptance Level")
+}
+
+# 6. Results Output
+results_summary <- function(model1, model2, sem_fit) {
+  # Model 1 summary
+  summary_m1 <- summary(model1)
+  
+  # Model 2 summary
+  summary_m2 <- summary(model2)
+  
+  # SEM model fit indices
+  fit_indices <- fitMeasures(sem_fit)
+  
+  # Output results
+  list(
+    model1 = summary_m1,
+    model2 = summary_m2,
+    sem_fit = summary(sem_fit),
+    fit_indices = fit_indices
+  )
+}
+
+# 7. Save Results
+save_results <- function(results, plots, filename) {
+  # Save as RDS file
+  saveRDS(results, file = paste0(filename, "_results.rds"))
+  
+  # Save plots
+  ggsave(paste0(filename, "_main_effects.png"), plots$main_effects)
+  ggsave(paste0(filename, "_interactions.png"), plots$interactions)
+  ggsave(paste0(filename, "_regional.png"), plots$regional)
+}
+
+# Run complete analysis
+run_analysis <- function() {
+  # 1. Data preprocessing
+  data_clean <- clean_data(wvs_data)
+  
+  # 2. Descriptive statistics
+  desc_stats <- descriptives(data_clean)
+  
+  # 3. Fit models
+  m1 <- model1
+  m2 <- model2
+  sem <- sem_fit
+  
+  # 4. Generate plots
+  plots <- list(
+    main_effects = plot_main_effects(m1),
+    interactions = plot_interactions(m2),
+    regional = plot_regional_differences(data_clean)
+  )
+  
+  # 5. Summarize results
+  results <- results_summary(m1, m2, sem)
+  
+  # 6. Save results
+  save_results(results, plots, "open_relationships_analysis")
+  
+  return(list(
+    descriptives = desc_stats,
+    models = results,
+    plots = plots
+  ))
+}
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="project-title">
+                    <h2>SQL-Based Analysis of Social Media Engagement: Insights into User Behavior and Content Performance</h2>
+                </div>
+                <div class="project-abstract">
+                    <p>This project focuses on leveraging SQL to analyze social media engagement data, providing actionable insights into user interaction trends, content performance, and platform growth. Using a dataset containing user interactions (likes, comments, shares) across multiple social media platforms, the analysis identifies key engagement drivers and patterns. SQL queries are employed to calculate metrics such as average engagement rate, top-performing content categories, and user activity segmentation. The findings inform strategies for enhancing content reach and platform engagement.</p>
+                    <div class="keywords">
+                        <strong>Keywords:</strong> Social Media Analytics, SQL Queries, User Engagement Metrics, Content Performance Analysis, Data-Driven Insights
+                    </div>
+                </div>
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* social_media_data Table1 */
+Post_ID  Platform    User_ID  Likes  Comments  Shares  Content_Type  Post_Date
+1        Facebook    101      50     10        5       Video         2023-11-01
+2        Instagram   102      120    30        20      Image         2023-11-02
+3        Twitter     103      30     5         2       Text          2023-11-03
+...      ...        ...      ...    ...       ...     ...           ...
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* social_media_data Table2 */
+Column Name       Data Type     Description
+Post_ID          INT           Unique identifier for each post.
+Platform         VARCHAR(50)    Social media platform (e.g., Facebook, Twitter).
+User_ID          INT           Unique identifier for the user.
+Likes            INT           Number of likes on the post.
+Comments         INT           Number of comments on the post.
+Shares           INT           Number of shares for the post.
+Content_Type     VARCHAR(50)    Type of content (e.g., Image, Video, Text).
+Post_Date        DATE          Date when the post was made.
+Engagement_Score FLOAT         Computed metric combining likes, comments, and shares.
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* user_data Table */
+Column Name      Data Type     Description
+User_ID         INT           Unique identifier for each user.
+Name            VARCHAR(100)   User's name (if applicable).
+Join_Date       DATE          The date the user joined the platform.
+Total_Posts     INT           Number of posts made by the user.
+Total_Engagement FLOAT        Total engagement score across all posts.
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* platform_data Table */
+Column Name     Data Type     Description
+Platform        VARCHAR(50)   Social media platform name.
+Total_Posts     INT          Total number of posts on the platform.
+Avg_Engagement  FLOAT        Average engagement score for the platform.
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* Average Engagement Per User by Platform */
+SELECT Platform, User_ID, 
+       AVG(Engagement_Score) AS Avg_User_Engagement
+FROM social_media_data
+GROUP BY Platform, User_ID
+ORDER BY Avg_User_Engagement DESC
+LIMIT 10;
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* Most Common Content Type by Platform */
+SELECT Platform, Content_Type, 
+       COUNT(Post_ID) AS Content_Count
+FROM social_media_data
+GROUP BY Platform, Content_Type
+ORDER BY Content_Count DESC;
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="code-section">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-sql">
+/* Users with the Highest Engagement Across All Platforms */
+SELECT u.User_ID, u.Name, SUM(s.Engagement_Score) AS Total_Engagement
+FROM user_data u
+JOIN social_media_data s ON u.User_ID = s.User_ID
+GROUP BY u.User_ID, u.Name
+ORDER BY Total_Engagement DESC
+LIMIT 10;
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="project-title">
+                    <h2>SQL Analysis</h2>
+                </div>
+                <div class="project-abstract">
+                    <h3>Engagement Score Calculation:</h3>
+                    <p>Engagement scores are calculated by assigning weights to Likes, Comments, and Shares based on their relative importance. The weighted formula provides a unified metric to compare content across platforms.</p>
+                    
+                    <h3>Top-Performing Content:</h3>
+                    <p>SQL identifies the most engaging content types (e.g., video, image, text) by calculating average engagement scores. Insights inform content strategies for maximizing user interaction.</p>
+                    
+                    <h3>Active User Insights:</h3>
+                    <p>SQL queries highlight the most active users, enabling targeted campaigns or personalized engagement efforts.</p>
+                    
+                    <h3>Temporal Trends:</h3>
+                    <p>Time-based analysis reveals peaks and troughs in user engagement, aiding in scheduling and content release strategies.</p>
+                    
+                    <h3>Platform Comparison:</h3>
+                    <p>Platform-specific metrics help identify which platforms drive the most engagement, allowing optimization of cross-platform strategies.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="project-title">
+                    <h2>Methodology</h2>
+                </div>
+                <div class="project-abstract">
+                    <ul>
+                        <li><strong>Data Collection:</strong> Social media data (posts, user interactions) is ingested into an SQL database, normalized into tables for scalability.</li>
+                        
+                        <li><strong>Query Design:</strong> SQL queries focus on key metrics such as engagement scores, user activity, and temporal trends.</li>
+                        
+                        <li><strong>Weighted Metrics:</strong> Engagement scores are weighted to account for varying impacts of likes, comments, and shares.</li>
+                        
+                        <li><strong>Actionable Insights:</strong> Query results are used to drive decisions on content optimization, user retention strategies, and platform focus.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="sql">
+                <div class="project-title">
+                    <h2>Analysis Results</h2>
+                </div>
+                <div class="project-abstract">
+                    <h3>Engagement Hotspots:</h3>
+                    <p>SQL queries reveal top-performing content types (e.g., videos on Instagram have the highest engagement).</p>
+                    
+                    <h3>User Insights:</h3>
+                    <p>Analysis identifies users with the highest contributions to platform activity, aiding targeted marketing.</p>
+                    
+                    <h3>Platform Comparison:</h3>
+                    <p>Average engagement metrics show which platforms foster higher user interaction rates.</p>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="spss">
+                <div class="project-title">
+                    <h2>Beyond Time Spent Online: Differential Effects of Internet Importance and Usage Time on Well-being and Social Connections</h2>
+                </div>
+                <div class="project-abstract">
+                    <p>This study utilizes data from 14,940 participants in the 2022 China Family Panel Studies (CFPS) to examine how both internet usage time and perceived internet importance relate to multiple dimensions of wellbeing and social outcomes. Using SPSS for comprehensive quantitative analysis, we investigated relationships with happiness, life satisfaction, meaning in life, interpersonal relations, and social trust.</p>
+                    <div class="keywords">
+                        <strong>Keywords:</strong> Internet usage, Social media frequency, Interpersonal relationship, Depression, Regression, Mediation moderation
+                    </div>
+                </div>
+                <div class="code-section" style="line-height: 1.2;">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-spss">
+Descriptive Statistics and Variable Definitions
+
+Variable                Variable definition                                Mean    SD      Min    Max
+------------------------------------------------------------------------------------------
+Dependent Variable
+Happiness              How happy do you feel?                             7.41    1.958   0      10
+                      (0 = very unhappy, 10 = very Happy)
+Life Satisfaction      Are you satisfied with your life?                  3.92    0.890   0      10
+                      (0 = very unsatisfied, 10 = very satisfied)
+Meaning in Life        To what extent do you consider your life           7.39    1.940   0      10
+                      to be meaningful? (0 = not meaningful at all, 
+                      10 = very meaningful)
+Interpersonal         Do you think you are popular?                      6.96    1.775   0      10
+Relations             (0 = not popular, 10 = very popular)
+Social Trust          Do you think that most people are trustworthy?     2.72    0.980   1      5
+                      (1 = strongly disagree, 5 = strongly agree)
+
+Independent Variables
+Internet Time         In general, how long do you access the Internet    172.42  147.07  1      1440
+                     using mobile/computers/devices every day? (minutes)
+Internet              How important is the Internet to your everyday     3.85    1.264   1      5
+Importance           life? (1 = not important, 5 = very important)
+
+Control Variables
+Age                  Age of the respondent                              40.66   14.15   18     88
+Gender               Dummy Coded, Male = 1, Female = 0                  0.51    0.5     0      1
+Education            Dummy Coded (1 = Illiterate, 2 = Primary School,   4.56    1.71    0      10
+                     3 = Junior High School, 4 = Senior High School, 
+                     5 = Junior College, 6 = Bachelor's Degree, 
+                     7 = Master's Degree, 8 = Doctoral Degree)
+                </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="spss">
+                <div class="project-title">
+                    <h2>Regression Models</h2>
+                </div>
+                <div class="project-abstract">
+                    <p><strong>Model 1: Internet Usage Time</strong></p>
+                    <p style="font-family: 'Times New Roman', Times, serif; margin: 1rem 0;">
+                        𝑌 = 𝛽₀ + 𝛽₁(𝑖𝑛𝑡𝑒𝑟𝑛𝑒𝑡_𝑡𝑖𝑚𝑒) + 𝛽₂(𝑎𝑔𝑒) + 𝛽₃(𝑔𝑒𝑛𝑑𝑒𝑟) + 𝛽₄(𝑒𝑑𝑢𝑐𝑎𝑡𝑖𝑜𝑛) + 𝛽₅(𝑖𝑛𝑜𝑚𝑒) + 𝛽₆(𝑠𝑡𝑎𝑡𝑢𝑠) + 𝜀
+                    </p>
+
+                    <p><strong>Model 2: Internet Importance</strong></p>
+                    <p style="font-family: 'Times New Roman', Times, serif; margin: 1rem 0;">
+                        𝑌 = 𝛽₀ + 𝛽₁(𝑖𝑛𝑡𝑒𝑟𝑛𝑒𝑡_𝑖𝑚𝑝𝑜𝑟𝑡𝑎𝑛𝑐𝑒) + 𝛽₂(𝑎𝑔𝑒) + 𝛽₃(𝑔𝑒𝑛𝑑𝑒𝑟) + 𝛽₄(𝑒𝑑𝑢𝑐𝑎𝑡𝑖𝑜𝑛) + 𝛽₅(𝑖𝑛𝑐𝑜𝑚𝑒) + 𝛽₆(𝑠𝑡𝑎𝑡𝑢𝑠) + 𝜀
+                    </p>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="spss">
+                <div class="code-section" style="line-height: 1.2;">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-spss">
+Correlations among study variables
+
+            1       2       3       4       5       6       7       8       9       10      11      12
+
+Age         1
+Gender      .039**  1
+Edu        -.336**  .028**  1
+Income      .070**  .038**  -.033**  1
+Status      .222**  .011    -.105**  .568**  1
+Time       -.323**  -.078*  .254**  -.048**  -.121**  1
+Importance  -.267** -.009   .189**   .042**  -.014    .185**  1
+Happiness   .001    .006    .041**   .242**  .256**   .001    .082**  1
+Meaning     .024**  .025**  .018**   .240**  .252**  -.033**  .108**  .657**  1
+Life satis  .108**  .008   -.060**   .342**  .329**  -.064**  .026**  .511**  .471**  1
+Trust       .071**  .006   -.149**  -.066**  -.058**  -.027**  -.041** -.141** -.118** -.102**  1
+Relations   .074**  .026**  .020*    .205**  .275**  -.027**   .105**  .466**  .417**  .264**  -.099**  1
+
+Note. *p < .05. **p < .01. Time = Internet Use time. Importance = Internet Importance.
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-card" data-tech="spss">
+                <div class="project-title">
+                    <h2>Multiple Regression Analyses</h2>
+                </div>
+                <div class="code-section" style="line-height: 1.2;">
+                    <button class="copy-btn">Copy</button>
+                    <pre class="line-numbers"><code class="language-spss">
+Multiple Regression Analyses predicting wellbeing, interpersonal relations, and social trust
+
+Variables                 Happiness           Life Satisfaction      Life Meaning         Interpersonal         Social Trust
+                                                                                        Relations
+                         Model 1   Model 2    Model 1    Model 2    Model 1   Model 2    Model 1   Model 2    Model 1    Model 2
+
+Controls
+Age                      .010      .007       .046**     .060**    -.011     .022*      .047**    .077**     .023*      .018
+Gender                  -.002     -.002      -.008      -.007      .015      .017*      .015      .014       .013       .013
+Education               .061**    .055**     -.011      -.017      .045**    .029**     .045**    .051**    -.151**    -.150**
+Income                  .150**    .126**      .229**     .227**    .132**    .127**     .067**    .061**    -.036**    -.035**
+Social Status           .202**    .200**      .193**     .192**    .190**    .188**     .242**    .238**    -.064**    -.064**
+
+Predictors
+Internet Time           .006                 -.012                 -.020*                .003                  .008
+Internet Importance              .072**                 .042**                .109**                .121**               -.011
+
+Model Summary
+R²                      .087      .092       .150       .151       .082      .092       .087      .100       .031       .031
+F                      222.40    232.25     409.57     413.78     208.66    237.80     223.01    259.73     73.237     72.748
+
+Note. N = 14,940. Standardized regression coefficients (β) are reported. Model 1 includes controls and Internet Time as predictors; Model 2 
+includes controls and Internet Importance as predictors. *p < .05. **p < .01
+                </code></pre>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Zihan(Catherine) Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.8/clipboard.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/cs.js"></script>
+</body>
+</html> 

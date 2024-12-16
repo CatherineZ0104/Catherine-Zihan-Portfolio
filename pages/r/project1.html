@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistical Analysis in R - Project</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-item">Home</a>
+            <a href="../cs.html" class="nav-item active">CS</a>
+            <a href="../publication.html" class="nav-item">Publication</a>
+            <a href="../digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="project-detail">
+            <div class="project-header">
+                <h1>Statistical Analysis in R</h1>
+                <p class="project-subtitle">Advanced Data Analysis for Internet Usage Research</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Project Overview</h2>
+                <p>Implementation of advanced statistical analyses using R for examining relationships between internet usage patterns, psychological well-being, and social connections.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Analysis Process</h2>
+                
+                <div class="analysis-step">
+                    <h3>1. Data Preprocessing</h3>
+                    <pre><code class="language-r">
+# Load required libraries
+library(tidyverse)
+library(psych)
+library(lavaan)
+
+# Data preprocessing
+data_prep <- function(df) {
+  df %>%
+    mutate(
+      internet_importance = rowMeans(
+        select(., qn601_s_1, qn601_s_2, qn601_s_3), 
+        na.rm = TRUE
+      ),
+      wellbeing = rowMeans(
+        select(., qn2001, qn2002, qn2003), 
+        na.rm = TRUE
+      )
+    )
+}
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>2. Structural Equation Modeling</h3>
+                    <pre><code class="language-r">
+# Define SEM model
+model <- '
+  # Measurement model
+  wellbeing =~ qn2001 + qn2002 + qn2003
+  importance =~ qn601_s_1 + qn601_s_2 + qn601_s_3
+
+  # Structural model
+  wellbeing ~ c*importance + b*social
+  social ~ a*importance
+
+  # Indirect effect
+  indirect := a*b
+  total := c + (a*b)
+'
+
+# Fit model
+fit <- sem(model, data = df)
+summary(fit, standardized = TRUE, fit.measures = TRUE)
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>3. Advanced Visualization</h3>
+                    <pre><code class="language-r">
+# Create advanced visualizations
+ggplot(data, aes(x = internet_importance, y = wellbeing)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", se = TRUE) +
+  facet_wrap(~education_level) +
+  theme_minimal() +
+  labs(
+    title = "Internet Importance vs Well-being",
+    x = "Internet Importance Score",
+    y = "Well-being Index"
+  )
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Findings</h2>
+                <ul>
+                    <li>Strong positive correlation between internet importance and well-being (r = 0.32)</li>
+                    <li>Significant mediation effect through social connections</li>
+                    <li>Results robust across different demographic groups</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html> 

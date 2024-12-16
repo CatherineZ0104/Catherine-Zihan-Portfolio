@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Data Visualization - R Project</title>
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/cs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-item">Home</a>
+            <a href="../cs.html" class="nav-item active">CS</a>
+            <a href="../publication.html" class="nav-item">Publication</a>
+            <a href="../digital-media.html" class="nav-item">Digital Media</a>
+        </div>
+    </nav>
+    
+    <main class="main-content">
+        <div class="project-detail">
+            <div class="project-header">
+                <h1>Advanced Data Visualization in R</h1>
+                <p class="project-subtitle">Complex Data Visualization for Research Findings</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Project Overview</h2>
+                <p>Creating sophisticated visualizations to represent complex relationships between internet usage patterns, well-being indicators, and demographic variables.</p>
+            </div>
+
+            <div class="project-section">
+                <h2>Visualization Process</h2>
+                
+                <div class="analysis-step">
+                    <h3>1. Data Preparation</h3>
+                    <pre><code class="language-r">
+# Load required libraries
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(scales)
+
+# Prepare data for visualization
+data_prep <- df %>%
+  group_by(education_level) %>%
+  summarise(
+    avg_importance = mean(internet_importance, na.rm = TRUE),
+    avg_wellbeing = mean(wellbeing_index, na.rm = TRUE),
+    avg_social = mean(social_connections, na.rm = TRUE)
+  )
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>2. Complex Visualizations</h3>
+                    <pre><code class="language-r">
+# Create advanced plot
+ggplot(data_prep, aes(x = avg_importance, y = avg_wellbeing)) +
+  geom_point(aes(size = avg_social, color = education_level), alpha = 0.7) +
+  geom_smooth(method = "lm", se = TRUE, color = "darkblue") +
+  facet_wrap(~education_level) +
+  scale_size_continuous(range = c(3, 10)) +
+  theme_minimal() +
+  labs(
+    title = "Internet Importance vs Well-being by Education Level",
+    x = "Average Internet Importance",
+    y = "Average Well-being Score",
+    size = "Social Connection Level"
+  ) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.title = element_text(size = 12),
+    legend.position = "right"
+  )
+                    </code></pre>
+                </div>
+
+                <div class="analysis-step">
+                    <h3>3. Interactive Elements</h3>
+                    <pre><code class="language-r">
+# Create interactive visualization using plotly
+library(plotly)
+
+p <- ggplot(data_prep, aes(x = avg_importance, y = avg_wellbeing,
+                          text = paste("Education:", education_level,
+                                     "\nSocial Score:", round(avg_social, 2)))) +
+  geom_point(aes(color = education_level)) +
+  geom_smooth(method = "lm", se = FALSE) +
+  theme_minimal()
+
+ggplotly(p, tooltip = "text")
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="project-section">
+                <h2>Key Features</h2>
+                <ul>
+                    <li>Complex multi-variable visualizations</li>
+                    <li>Interactive plots for better data exploration</li>
+                    <li>Customized themes and color schemes</li>
+                    <li>Faceted plots for comparative analysis</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; <span id="year"></span> Catherine Zhang. All rights reserved.</p>
+    </footer>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="../../js/main.js"></script>
+</body>
+</html> 
